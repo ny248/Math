@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import math, numpy
 import tkinter as tk
 from tkinter import ttk
@@ -69,4 +70,6 @@ def circumscribed_circle(points):
     if radius < 0:
         raise ValueError
     return circle(radius ** 0.5, point(-0.5 * x[0], -0.5 * x[1])) 
+=======
+>>>>>>> 34f3db8ef065d1956b73055eb8638e57672c123a
 
