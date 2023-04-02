@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import math, numpy
 import tkinter as tk
 from tkinter import ttk
@@ -6,14 +5,11 @@ from tkinter import ttk
 def create_GUI():
     root = tk.Tk()
     root.title("GUI")
-    frame1 = ttk.Frame(root, padding = 16)
-    label1 = ttk.Label(frame1, text = 'Your name')
-    entry1 = ttk.Entry(frame1, textvariable = "Hello World!")
-    button1 = ttk.Button(frame1, text='OK', command=lambda: print('Hello, %s.' % t.get()))
-    frame1.pack()
-    label1.pack(side = LEFT)
-    entry1.pack(side = LEFT)
-    button1.pack(side = LEFT)
+    root.geometry("600x500")
+    buttons = tk.Frame(root, bg = "beige")
+    buttons.place(x = 0, y = 0, width = 80, relheight = 1)
+    point_btn = tk.Button(buttons, text = "点")
+    point_btn.place(relx = 0, rely = 0, relwidth = 1.0, relheight = 0.1)
     root.mainloop()
 
 eps = 0.001
@@ -70,6 +66,4 @@ def circumscribed_circle(points):
     if radius < 0:
         raise ValueError
     return circle(radius ** 0.5, point(-0.5 * x[0], -0.5 * x[1])) 
-=======
->>>>>>> 34f3db8ef065d1956b73055eb8638e57672c123a
-
+create_GUI()
