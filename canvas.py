@@ -1,9 +1,12 @@
 import math, numpy
 import tkinter as tk
 from functools import partial
-global mode
+global mode, canvas
 def click_canvas(event):
+    global mode, canvas
     print(event.x, event.y)
+    if mode == 0:
+        canvas.create_oval(event.x - 2, event.y - 2, event.x + 2, event.y + 2)
 
 def click_button_0(button):
     global mode
@@ -15,7 +18,7 @@ def click_button_0(button):
         button.config(text = "点")
 
 def create_GUI():
-    global mode
+    global mode, canvas
     mode = -1
     root = tk.Tk()
     root.title("GUI")
@@ -23,7 +26,7 @@ def create_GUI():
     root.configure(bg = "white")
     buttons = tk.Frame(root)
     buttons.place(x = 0, y = 0, width = 80, relheight = 1)
-    canvas = tk.Frame(root)
+    canvas = tk.Canvas(root)
     canvas.place(x = 80, y = 0, relwidth = 1, relheight = 1)
     canvas.configure(bg = "#ffffee")
     canvas.bind(sequence = "<Button-1>", func = click_canvas)
