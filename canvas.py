@@ -49,10 +49,12 @@ def move_canvas(event):
     if temp[1] != None:
         temp[1] = 
     """
+
 def click_radio(value):
     global mode, selected
     select_clear()
     mode = value
+
 def init_globals():
     global mode, points, selected, radio
     mode = -1
@@ -60,16 +62,24 @@ def init_globals():
     points = {}
     radio = []
 def create_GUI():
-    A = []
-    b = []
-    for p in points:
-        A.append(list(p.coordinate) + [1.0])
-        b.append(-p.abs() ** 2)
-    A = numpy.array(A)
-    b = numpy.array(b)
-    x = numpy.linalg.solve(A, b)
-    radius = x[1] ** 2 / 4 + x[0] ** 2 / 4 - x[2]
-    if radius < 0:
-        raise ValueError
-    return circle(radius ** 0.5, point(-0.5 * x[0], -0.5 * x[1])) 
+    global canvas, radio
+    init_globals()
+    root = tk.Tk()
+    root.title("GUI")
+    root.geometry("600x500")
+    root.configure(bg = "white")
+    buttons = tk.Frame(root)
+    buttons.place(x = 0, y = 0, width = 80, relheight = 1)
+    canvas = tk.Canvas(root)
+    canvas.place(x = 80, y = 0, relwidth = 1, relheight = 1)
+    canvas.configure(bg = "#ffffee")
+    canvas.bind(sequence = "<Button-1>", func = click_canvas)
+    canvas.bind("<Motion>", move_canvas)
+    modes = ["点", "線分"]
+    px_v = tk.IntVar(value = 10)
+    for i in range(len(modes)):
+        radio.append(tk.Radiobutton(buttons, text = modes[i], value = i, variable = px_v))
+        radio[i]['command'] = partial(click_radio, i)
+        radio[i].place(relx = 0, y = 60 * i, relwidth = 1.0, height = 60)
+    root.mainloop()
 create_GUI()
