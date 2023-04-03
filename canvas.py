@@ -2,7 +2,8 @@ import math, numpy
 import tkinter as tk
 from functools import partial
 global mode
-
+def click_canvas(event):
+    print(event.x, event.y)
 
 def click_button_0(button):
     global mode
@@ -22,9 +23,13 @@ def create_GUI():
     root.configure(bg = "white")
     buttons = tk.Frame(root)
     buttons.place(x = 0, y = 0, width = 80, relheight = 1)
+    canvas = tk.Frame(root)
+    canvas.place(x = 80, y = 0, relwidth = 1, relheight = 1)
+    canvas.configure(bg = "#ffffee")
+    canvas.bind(sequence = "<Button-1>", func = click_canvas)
     point_btn = tk.Button(buttons, text = "点")
     point_btn['command'] = partial(click_button_0, point_btn)
-    point_btn.place(relx = 0, rely = 0, relwidth = 1.0, relheight = 0.1)
+    point_btn.place(relx = 0, rely = 0, relwidth = 1.0, height = 60)
     root.mainloop()
 eps = 0.001
 class point:
