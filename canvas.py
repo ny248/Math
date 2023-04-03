@@ -2,31 +2,43 @@ import math, numpy
 import tkinter as tk
 from functools import partial
 global mode, canvas, points, selected, radio
-def select(x, y):
+def find_point(x, y):
     global canvas, points
     mouse = numpy.array([x, y])
     temp = [9, None]#距離9以上の場合は選択しない
     for i in points:
-        dist = numpy.linalg(i - mouse)
+        dist = numpy.linalg.norm(points[i] - mouse, ord = 1)
         if dist < temp[0]:
             temp[0] = dist
             temp[1] = i
     return temp[1]
+def select(id):
+    global selected
+    if id in selected:
+        selected.discard(id)
+    else:
+        selected.add(id)
+def select_clear():
+    global selected
+    selected.clear()
 def click_canvas(event):
     global mode, canvas, points, selected
     print(event.x, event.y)
     if mode == 0:
         id = canvas.create_oval(event.x - 2, event.y - 2, event.x + 2, event.y + 2)
-        points.append((numpy.array([event.x, event.y]), id))
+        points[id] = numpy.array([event.x, event.y])
     if mode == 1:
-        ret = select(event.x, event.y)
+        ret = find_point(event.x, event.y)
         if ret == None:
             return
-        if len(selected) == 0:
-            selected.append(ret)
-        else:
-            canvas.create_line(selected[0][0][0], selected[0][0][1], ret[0][0], ret[0][1])
-            selected = []
+        select(ret)
+        if len(selected) == 2:
+            args = []
+            for i in selected:
+                args.append(points[i][0])
+                args.append(points[i][1])
+            canvas.create_line(*args)
+            select_clear()
 def move_canvas(event):
     pass
     """
@@ -44,13 +56,13 @@ def move_canvas(event):
 
 def click_radio(value):
     global mode, selected
-    selected = []
+    select_clear()
     mode = value
 
 def create_GUI():
     global mode, canvas, points, selected, radio
-    selected = []
-    points = []
+    selected = set()
+    points = {}
     radio = []
     mode = -1
     root = tk.Tk()
@@ -64,13 +76,12 @@ def create_GUI():
     canvas.configure(bg = "#ffffee")
     canvas.bind(sequence = "<Button-1>", func = click_canvas)
     canvas.bind("<Motion>", move_canvas)
+    modes = ["点", "線分"]
     px_v = tk.IntVar(value = 10)
-    radio.append(tk.Radiobutton(buttons, text = "点", value = 0, variable = px_v))
-    radio[0]['command'] = partial(click_radio, 0)
-    radio[0].place(relx = 0, y = 0, relwidth = 1.0, height = 60)
-    radio.append(tk.Radiobutton(buttons, text = "線分", value = 1, variable = px_v))
-    radio[1]['command'] = partial(click_radio, 1)
-    radio[1].place(relx = 0, y = 60, relwidth = 1.0, height = 60)
+    for i in range(len(modes)):
+        radio.append(tk.Radiobutton(buttons, text = modes[i], value = i, variable = px_v))
+        radio[i]['command'] = partial(click_radio, i)
+        radio[i].place(relx = 0, y = 60 * i, relwidth = 1.0, height = 60)
     root.mainloop()
 eps = 0.001
 class point:
