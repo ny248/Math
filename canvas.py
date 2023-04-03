@@ -1,7 +1,7 @@
 import math, numpy
 import tkinter as tk
 from functools import partial
-global mode, canvas, points, selected
+global mode, canvas, points, selected, radio
 def select(x, y):
     global canvas, points
     mouse = numpy.array([x, y])
@@ -42,32 +42,16 @@ def move_canvas(event):
         temp[1] = 
     """
 
-    
-    
-
-def click_button_0(button):
+def click_radio(value):
     global mode, selected
     selected = []
-    if mode != 0:
-        mode = 0
-        button.config(text = "●点")
-    else:
-        mode = -1
-        button.config(text = "点")
-def click_button_1(button):
-    global mode, selected
-    selected = []
-    if mode != 1:
-        mode = 1
-        button.config(text = "●線分")
-    else:
-        mode = -1
-        button.config(text = "線分")
+    mode = value
 
 def create_GUI():
-    global mode, canvas, points, selected
+    global mode, canvas, points, selected, radio
     selected = []
     points = []
+    radio = []
     mode = -1
     root = tk.Tk()
     root.title("GUI")
@@ -80,12 +64,13 @@ def create_GUI():
     canvas.configure(bg = "#ffffee")
     canvas.bind(sequence = "<Button-1>", func = click_canvas)
     canvas.bind("<Motion>", move_canvas)
-    point_btn = tk.Button(buttons, text = "点")
-    point_btn['command'] = partial(click_button_0, point_btn)
-    point_btn.place(relx = 0, y = 0, relwidth = 1.0, height = 60)
-    line_btn = tk.Button(buttons, text = "線分")
-    line_btn['command'] = partial(click_button_1, line_btn)
-    line_btn.place(relx = 0, y = 60, relwidth = 1.0, height = 60)
+    px_v = tk.IntVar(value = 10)
+    radio.append(tk.Radiobutton(buttons, text = "点", value = 0, variable = px_v))
+    radio[0]['command'] = partial(click_radio, 0)
+    radio[0].place(relx = 0, y = 0, relwidth = 1.0, height = 60)
+    radio.append(tk.Radiobutton(buttons, text = "線分", value = 1, variable = px_v))
+    radio[1]['command'] = partial(click_radio, 1)
+    radio[1].place(relx = 0, y = 60, relwidth = 1.0, height = 60)
     root.mainloop()
 eps = 0.001
 class point:
