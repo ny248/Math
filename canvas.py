@@ -13,16 +13,19 @@ def find_point(x, y):
             temp[1] = i
     return temp[1]
 def select(id):
-    global selected
+    global selected, canvas
+    canvas.itemconfigure(id, fill = "white")
     selected.append(id)
 def select_clear():
     global selected
+    for id in selected:
+        canvas.itemconfigure(id, fill = "black")
     selected = []
 def click_canvas(event):
     global mode, canvas, points, selected
     print(event.x, event.y)
     if mode == 0:
-        id = canvas.create_oval(event.x - 2, event.y - 2, event.x + 2, event.y + 2)
+        id = canvas.create_oval(event.x - 2, event.y - 2, event.x + 2, event.y + 2, fill = "black")
         points[id] = numpy.array([event.x, event.y])
     if mode == 1:
         ret = find_point(event.x, event.y)
