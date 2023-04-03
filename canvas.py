@@ -14,13 +14,10 @@ def find_point(x, y):
     return temp[1]
 def select(id):
     global selected
-    if id in selected:
-        selected.discard(id)
-    else:
-        selected.add(id)
+    selected.append(id)
 def select_clear():
     global selected
-    selected.clear()
+    selected = []
 def click_canvas(event):
     global mode, canvas, points, selected
     print(event.x, event.y)
@@ -33,11 +30,7 @@ def click_canvas(event):
             return
         select(ret)
         if len(selected) == 2:
-            args = []
-            for i in selected:
-                args.append(points[i][0])
-                args.append(points[i][1])
-            canvas.create_line(*args)
+            canvas.create_line(points[selected[0]][0], points[selected[0]][1], points[selected[1]][0], points[selected[1]][1])
             select_clear()
 def move_canvas(event):
     pass
@@ -59,12 +52,15 @@ def click_radio(value):
     select_clear()
     mode = value
 
-def create_GUI():
-    global mode, canvas, points, selected, radio
-    selected = set()
+def init_globals():
+    global mode, points, selected, radio
+    mode = -1
+    selected = []
     points = {}
     radio = []
-    mode = -1
+def create_GUI():
+    global canvas, radio
+    init_globals()
     root = tk.Tk()
     root.title("GUI")
     root.geometry("600x500")
