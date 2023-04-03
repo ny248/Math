@@ -1,24 +1,73 @@
 import math, numpy
 import tkinter as tk
 from functools import partial
-global mode, canvas
+global mode, canvas, points, selected
+def select(x, y):
+    global canvas, points
+    mouse = numpy.array([x, y])
+    temp = [9, None]#距離9以上の場合は選択しない
+    for i in points:
+        dist = numpy.linalg(i - mouse)
+        if dist < temp[0]:
+            temp[0] = dist
+            temp[1] = i
+    return temp[1]
 def click_canvas(event):
-    global mode, canvas
+    global mode, canvas, points, selected
     print(event.x, event.y)
     if mode == 0:
-        canvas.create_oval(event.x - 2, event.y - 2, event.x + 2, event.y + 2)
+        id = canvas.create_oval(event.x - 2, event.y - 2, event.x + 2, event.y + 2)
+        points.append((numpy.array([event.x, event.y]), id))
+    if mode == 1:
+        ret = select(event.x, event.y)
+        if ret == None:
+            return
+        if len(selected) == 0:
+            selected.append(ret)
+        else:
+            canvas.create_line(selected[0][0][0], selected[0][0][1], ret[0][0], ret[0][1])
+            selected = []
+def move_canvas(event):
+    pass
+    """
+    global mode, canvas, points, selected
+    mouse = numpy.array([event.x, event.y])
+    temp = [float('inf'), None]
+    for i in points:
+        dist = numpy.linalg(i - mouse)
+        if dist < temp[0]:
+            temp[0] = dist
+            temp[1] = i
+    if temp[1] != None:
+        temp[1] = 
+    """
+
+    
+    
 
 def click_button_0(button):
-    global mode
+    global mode, selected
+    selected = []
     if mode != 0:
         mode = 0
         button.config(text = "●点")
     else:
         mode = -1
         button.config(text = "点")
+def click_button_1(button):
+    global mode, selected
+    selected = []
+    if mode != 1:
+        mode = 1
+        button.config(text = "●線分")
+    else:
+        mode = -1
+        button.config(text = "線分")
 
 def create_GUI():
-    global mode, canvas
+    global mode, canvas, points, selected
+    selected = []
+    points = []
     mode = -1
     root = tk.Tk()
     root.title("GUI")
@@ -30,9 +79,13 @@ def create_GUI():
     canvas.place(x = 80, y = 0, relwidth = 1, relheight = 1)
     canvas.configure(bg = "#ffffee")
     canvas.bind(sequence = "<Button-1>", func = click_canvas)
+    canvas.bind("<Motion>", move_canvas)
     point_btn = tk.Button(buttons, text = "点")
     point_btn['command'] = partial(click_button_0, point_btn)
-    point_btn.place(relx = 0, rely = 0, relwidth = 1.0, height = 60)
+    point_btn.place(relx = 0, y = 0, relwidth = 1.0, height = 60)
+    line_btn = tk.Button(buttons, text = "線分")
+    line_btn['command'] = partial(click_button_1, line_btn)
+    line_btn.place(relx = 0, y = 60, relwidth = 1.0, height = 60)
     root.mainloop()
 eps = 0.001
 class point:
