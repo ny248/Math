@@ -1,17 +1,31 @@
 import math, numpy
 import tkinter as tk
-from tkinter import ttk
+from functools import partial
+global mode
+
+
+def click_button_0(button):
+    global mode
+    if mode != 0:
+        mode = 0
+        button.config(text = "●点")
+    else:
+        mode = -1
+        button.config(text = "点")
 
 def create_GUI():
+    global mode
+    mode = -1
     root = tk.Tk()
     root.title("GUI")
     root.geometry("600x500")
-    buttons = tk.Frame(root, bg = "beige")
+    root.configure(bg = "white")
+    buttons = tk.Frame(root)
     buttons.place(x = 0, y = 0, width = 80, relheight = 1)
     point_btn = tk.Button(buttons, text = "点")
+    point_btn['command'] = partial(click_button_0, point_btn)
     point_btn.place(relx = 0, rely = 0, relwidth = 1.0, relheight = 0.1)
     root.mainloop()
-
 eps = 0.001
 class point:
     def __init__(self, x, y):
