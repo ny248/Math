@@ -49,12 +49,10 @@ def move_canvas(event):
     if temp[1] != None:
         temp[1] = 
     """
-
 def click_radio(value):
     global mode, selected
     select_clear()
     mode = value
-
 def init_globals():
     global mode, points, selected, radio
     mode = -1
@@ -62,68 +60,6 @@ def init_globals():
     points = {}
     radio = []
 def create_GUI():
-    global canvas, radio
-    init_globals()
-    root = tk.Tk()
-    root.title("GUI")
-    root.geometry("600x500")
-    root.configure(bg = "white")
-    buttons = tk.Frame(root)
-    buttons.place(x = 0, y = 0, width = 80, relheight = 1)
-    canvas = tk.Canvas(root)
-    canvas.place(x = 80, y = 0, relwidth = 1, relheight = 1)
-    canvas.configure(bg = "#ffffee")
-    canvas.bind(sequence = "<Button-1>", func = click_canvas)
-    canvas.bind("<Motion>", move_canvas)
-    modes = ["点", "線分"]
-    px_v = tk.IntVar(value = 10)
-    for i in range(len(modes)):
-        radio.append(tk.Radiobutton(buttons, text = modes[i], value = i, variable = px_v))
-        radio[i]['command'] = partial(click_radio, i)
-        radio[i].place(relx = 0, y = 60 * i, relwidth = 1.0, height = 60)
-    root.mainloop()
-eps = 0.001
-class point:
-    def __init__(self, x, y):
-        self.coordinate = (float(x), float(y))
-    def angle(self):
-        if abs(self) < eps:
-            raise ValueError
-        return math.atan2(self.coordinate[1], self.coordinate[0])
-    def abs(self):
-        return (self.coordinate[0] ** 2 + self.coordinate[1] ** 2) ** 0.5
-class line:
-    def __init__(self, begin: point, direction: point):
-        self.begin = begin
-        self.direction = direction
-class circle:
-    def __init__(self, radius: float, center: point):
-        self.radius = radius
-        self.center = center
-
-def cross(line0, line1):
-    outer_product = line0.direction * line1.direction
-    if outer_product < eps:
-        raise ValueError
-    t = -((line0.begin - line1.begin) * line1.direction) / (line0.direction * line1.direction)
-    return line0.begin + t * line0.direction
-
-
-def angle_equisector(line0, line1, n):
-    angles = [line0.direction.angle(), line0.direction.angle()]
-    origin = cross(line0, line1)
-    coeff = 0
-    if angles[1] - angles[0] > math.pi:
-        coeff += 2 * math.pi
-    elif angles[1] - angles[0] < -math.pi:
-        coeff -= 2 * math.pi
-    ret = set()
-    for i in range(1, n):
-        ang = (n - i) * angles[0] + i * angles[1]
-        ret.add(line(origin, point(math.cos(ang), math.sin(ang))))
-    return ret
-
-def circumscribed_circle(points):
     A = []
     b = []
     for p in points:
