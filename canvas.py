@@ -7,13 +7,17 @@ class point:
     global canvas, objects, shelf
     def __init__(self, x, y):
         self.coordinate = (x, y)
-        id = canvas.create_oval(x - 2, y - 2, x + 2, y + 2, fill = "black")
-        objects[id] = self
+        self.id = canvas.create_oval(x - 2, y - 2, x + 2, y + 2, fill = "black")
+        objects[self.id] = self
         draw_shelf()
     def place(self, pos, id):
         t = "point\n" + str(id) + " (" + str(self.coordinate[0]) + "," + str(self.coordinate[1]) + ")"
         item = tk.Label(shelf, text = t, bd = 2, relief=tk.RAISED)
         item.place(x = 0, y = pos * 40, relwidth = 1, height = 40)
+    def __del__(self):
+        canvas.delete(self.id)
+        #objects.discard(self.id)
+        draw_shelf()
 
 def draw_shelf():
     global shelf
@@ -21,6 +25,7 @@ def draw_shelf():
         child.destroy()
     pos = 0
     for i in objects:
+        print(i)
         objects[i].place(pos, i)
         pos += 1
     
@@ -34,7 +39,7 @@ def is_num(s):
 
 def enter_command(event):
     global command, objects
-    eval(command.get())
+    exec(command.get())
     print(objects)
     """
     com = command.get().split()
