@@ -43,6 +43,23 @@ class variable(object_base):
         return eval(self.definition[0])
     def place_string(self):
         return "variable\n" + str(self.timestamp) + " " + str(self.value())
+    
+class circle(object_base):
+    global canvas, objects, shelf, timestamp
+    def __init__(self, *definition):
+        self.definition = list(definition)
+        super().__init__()
+    def radius(self):
+        return eval(self.definition[0])
+    def center_x(self):
+        return eval(self.definition[1])
+    def center_y(self):
+        return eval(self.definition[2])
+    def draw(self):
+        x, y, r = self.center_x(), self.center_y(), self.radius()
+        self.id = canvas.create_oval(x - r, y - r, x + r, y + r)
+    def place_string(self):
+        return "circle\n" + str(self.timestamp) + "radius=" + str(self.radius()) + "\ncenter=(" + str(self.center_x()) + "," + str(self.center_y()) + ")"
 
 def add_object(obj):
     global timestamp
