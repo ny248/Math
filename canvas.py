@@ -3,39 +3,41 @@ import tkinter as tk
 from functools import partial
 global canvas, command, root, objects, timestamp
 
+class object_base:
+    global canvas, timestamp
+    def __init__(self, x, y):
+        add_object(self)
+        self.timestamp = timestamp
+        timestamp += 1
+        self.deleted = False
+    def place(self, pos):
+        item = tk.Label(shelf, text = self.place_string(), bd = 2, relief = tk.RAISED)
+        item.place(x = 0, y = pos * 40, relwidth = 1, height = 40)
+    def __del__(self):
+        if id in self:
+            canvas.delete(self.id)
+        draw_shelf()
+
 class point:
     global canvas, objects, shelf, timestamp
     def __init__(self, x, y):
+        super.__init__()
         self.coordinate = (x, y)
-        add_object(self)
-        self.timestamp = timestamp
-        self.deleted = False
         draw_shelf()
     def draw(self):
         x, y = self.coordinate[0], self.coordinate[1]
         self.id = canvas.create_oval(x - 2, y - 2, x + 2, y + 2, fill = "black")
-    def place(self, pos):
-        t = "point\n" + str(self.timestamp) + " (" + str(self.coordinate[0]) + "," + str(self.coordinate[1]) + ")"
-        item = tk.Label(shelf, text = t, bd = 2, relief = tk.RAISED)
-        item.place(x = 0, y = pos * 40, relwidth = 1, height = 40)
-    def __del__(self):
-        canvas.delete(self.id)
-        draw_shelf()
+    def place_string(self, pos):
+        return "point\n" + str(self.timestamp) + " (" + str(self.coordinate[0]) + "," + str(self.coordinate[1]) + ")"
 
 class variable:
     global canvas, objects, shelf, timestamp
     def __init__(self, value = 0):
+        super.__init__()
         self.value = value
-        add_object(self)
-        self.timestamp = timestamp
-        self.deleted = False
         draw_shelf()
-    def place(self, pos):
-        t = "variable\n" + str(self.timestamp) + " " + str(self.value)
-        item = tk.Label(shelf, text = t, bd = 2, relief = tk.RAISED)
-        item.place(x = 0, y = pos * 40, relwidth = 1, height = 40)
-    def __del__(self):
-        draw_shelf()
+    def place_string(self, pos):
+        return "variable\n" + str(self.timestamp) + " " + str(self.value)
 
 def add_object(obj):
     global timestamp
