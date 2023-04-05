@@ -5,11 +5,11 @@ global canvas, command, root, objects, timestamp
 
 class object_base:
     global canvas, timestamp
-    def __init__(self, x, y):
+    def __init__(self):
         add_object(self)
         self.timestamp = timestamp
-        timestamp += 1
         self.deleted = False
+        draw_shelf()
     def place(self, pos):
         item = tk.Label(shelf, text = self.place_string(), bd = 2, relief = tk.RAISED)
         item.place(x = 0, y = pos * 40, relwidth = 1, height = 40)
@@ -18,25 +18,24 @@ class object_base:
             canvas.delete(self.id)
         draw_shelf()
 
-class point:
+class point(object_base):
     global canvas, objects, shelf, timestamp
     def __init__(self, x, y):
-        super.__init__()
         self.coordinate = (x, y)
-        draw_shelf()
+        super().__init__()
+        self.draw()
     def draw(self):
         x, y = self.coordinate[0], self.coordinate[1]
         self.id = canvas.create_oval(x - 2, y - 2, x + 2, y + 2, fill = "black")
-    def place_string(self, pos):
+    def place_string(self):
         return "point\n" + str(self.timestamp) + " (" + str(self.coordinate[0]) + "," + str(self.coordinate[1]) + ")"
 
-class variable:
+class variable(object_base):
     global canvas, objects, shelf, timestamp
     def __init__(self, value = 0):
-        super.__init__()
         self.value = value
-        draw_shelf()
-    def place_string(self, pos):
+        super().__init__()
+    def place_string(self):
         return "variable\n" + str(self.timestamp) + " " + str(self.value)
 
 def add_object(obj):
@@ -65,7 +64,6 @@ def is_num(s):
 def enter_command(event):
     global command, objects
     exec(command.get())
-    print(objects)
     """
     com = command.get().split()
     if com[0] == "point":
