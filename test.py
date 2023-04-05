@@ -1,23 +1,11 @@
-import time
-import tkinter
-print(tkinter.Tcl().eval('info patchlevel'))
-def func1():
-   global win
-   win = tkinter.Tk()
-   win.geometry("300x200")
-   win.configure(bg='blue')
-   button_win = tkinter.Button(win,text='Go',command=func2)
-   button_win.pack()
-   win.mainloop()
+class base:
+    def __init__(self):
+        self.id = 234
 
-def func2():
-   win.configure(bg = 'green')
-   win.update_idletasks()
-   time.sleep(5)
-   func3()
+class sub(base):
+    def __init__(self):
+        #self.id = 0
+        super().__init__()
 
-def func3():
-    win.configure(bg = 'yellow')
-    win.update_idletasks()
-
-func1() 
+A = sub()
+print(A.id)
