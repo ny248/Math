@@ -6,24 +6,24 @@ global canvas, command, root, objects, timestamp
 class object_base:
     global canvas, timestamp
     def __init__(self):
-        add_object(self)
         self.timestamp = timestamp
+        add_object(self)
         self.deleted = False
         draw_shelf()
+        draw_canvas()
     def place(self, pos):
         item = tk.Label(shelf, text = self.place_string(), bd = 2, relief = tk.RAISED)
         item.place(x = 0, y = pos * 40, relwidth = 1, height = 40)
-    def __del__(self):
-        if id in self:
-            canvas.delete(self.id)
+    def erase(self):
+        self.deleted = True
         draw_shelf()
+        draw_canvas()
 
 class point(object_base):
     global canvas, objects, shelf, timestamp
     def __init__(self, x, y):
         self.coordinate = (x, y)
         super().__init__()
-        self.draw()
     def draw(self):
         x, y = self.coordinate[0], self.coordinate[1]
         self.id = canvas.create_oval(x - 2, y - 2, x + 2, y + 2, fill = "black")
@@ -43,6 +43,14 @@ def add_object(obj):
     objects.append(obj)
     timestamp += 1
 
+def draw_canvas():
+    global canvas, timestamp
+    for child in canvas.winfo_children():
+        child.destroy()
+    for i in range(timestamp):
+        if objects[i].deleted == False and hasattr(objects[i], "draw"):
+            objects[i].draw()
+
 def draw_shelf():
     global shelf, timestamp
     for child in shelf.winfo_children():
@@ -52,14 +60,6 @@ def draw_shelf():
         if objects[i].deleted == False:
             objects[i].place(pos)
             pos += 1
-    
-def is_num(s):
-    try:
-        float(s)
-    except ValueError:
-        return False
-    else:
-        return True
 
 def enter_command(event):
     global command, objects
