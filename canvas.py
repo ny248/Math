@@ -21,22 +21,28 @@ class object_base:
 
 class point(object_base):
     global canvas, objects, shelf, timestamp
-    def __init__(self, x, y):
-        self.coordinate = (x, y)
+    def __init__(self, *definition):
+        self.definition = list(definition)
         super().__init__()
+    def x(self):
+        return eval(self.definition[0])
+    def y(self):
+        return eval(self.definition[1])
     def draw(self):
-        x, y = self.coordinate[0], self.coordinate[1]
+        x, y = self.x(), self.y()
         self.id = canvas.create_oval(x - 2, y - 2, x + 2, y + 2, fill = "black")
     def place_string(self):
-        return "point\n" + str(self.timestamp) + " (" + str(self.coordinate[0]) + "," + str(self.coordinate[1]) + ")"
+        return "point\n" + str(self.timestamp) + " (" + str(self.x()) + "," + str(self.y()) + ")"
 
 class variable(object_base):
     global canvas, objects, shelf, timestamp
-    def __init__(self, value = 0):
-        self.value = value
+    def __init__(self, *definition):
+        self.definition = list(definition)
         super().__init__()
+    def value(self):
+        return eval(self.definition[0])
     def place_string(self):
-        return "variable\n" + str(self.timestamp) + " " + str(self.value)
+        return "variable\n" + str(self.timestamp) + " " + str(self.value())
 
 def add_object(obj):
     global timestamp
@@ -45,9 +51,9 @@ def add_object(obj):
 
 def draw_canvas():
     global canvas, timestamp
-    for child in canvas.winfo_children():
-        child.destroy()
     for i in range(timestamp):
+        if hasattr(objects[i], "id"):
+            tk.delete(objects[i].id)
         if objects[i].deleted == False and hasattr(objects[i], "draw"):
             objects[i].draw()
 
@@ -63,7 +69,8 @@ def draw_shelf():
 
 def enter_command(event):
     global command, objects
-    exec(command.get())
+    S = command.get().split()
+    exec(S[0] + "('" + "','".join(S[1:]) + "')")
     """
     com = command.get().split()
     if com[0] == "point":
